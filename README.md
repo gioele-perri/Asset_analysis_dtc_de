@@ -124,12 +124,14 @@ To deploy to a production environment:
 
 1. **Google Cloud Settings**:
    - Create a service account and download the JSON credential file.
-   - Set your SSH connection. Generate a key pair in your pc and store your public key in GCP
+   - Set an SSH connection. Generate a key pair in your pc and store your public key in GCP
 
-2. **Deploy using Terraform**:
+   > **Attention**: In order to be able to deploy with terraform, the SSH private key terraform must be decrypted (blank password during generation). It is unsecure, so use it only for deploy. Then remove it and create new encrypted one.
+
+2. **Install Terraform on your pc**:
    - Use Terraform to deploy the infrastructure and related services.
 
-3. **After installing Terraform**:
+3. **After installing Terraform, Deploy!**:
     ```bash
     cd ./infrastructure/tf
     terraform init
@@ -137,8 +139,12 @@ To deploy to a production environment:
 
     Kestra URL prompt : do not insert anything and press Enter
 
+    Copy kestra URL (shown in output console by terraform)
+
     terraform apply
+    ON kestra prompt past link
     ```
 > **Gentle reminder**:  
 Ensure you have defined all variables inside `variables.tf` and set the Looker embed URL inside `variables.json`.
-ter
+
+  If something goes wrong with setup -> Connect via SSH to GCI and execute commands in file ./setup.sh in the project root

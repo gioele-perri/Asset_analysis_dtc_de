@@ -69,7 +69,7 @@ variable "repo_url" {
 }
 
 variable "kestra_url" {
-  description = "URL di Kestra"
+  description = "Kestra URL"
 }
 
 variable "private_ssh_key" {

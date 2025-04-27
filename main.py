@@ -2,14 +2,14 @@ import streamlit as st
 import pandas as pd
 import os
 import json
-from app.classes.data import download_data, aggregate_data
-from app.classes.plots import (
+from app.data import download_data, aggregate_data
+from app.plots import (
     plot_bar_chart,
     plot_cumulative_return,
     plot_return_distribution,
     plot_volatility,
 )
-from app.classes.ui import show_ticker_selection, show_warning
+from app.ui import show_ticker_selection, show_warning
 
 
 # Config

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e  # se fallisce qualcosa, esce subito
+set -e  
 
 # Step 1: Deploy delle risorse che servono a Kestra
 terraform apply -target=google_compute_instance.streamlit_vm -target=google_compute_firewall.allow_app_ports -auto-approve

@@ -7,39 +7,49 @@ resource "google_compute_instance" "streamlit_vm" {
   boot_disk {
     initialize_params {
       image = "ubuntu-2204-jammy-v20250415"  # Ubuntu 22.04 LTS
-      size  = 30  # GB
+      size  = 30
     }
   }
 
   network_interface {
     network = "default"
-    access_config {}  # Assigns a public IP
+    access_config {}
   }
 
-    metadata = {
+  metadata = {
     repo_url = var.repo_url
   }
 
-   provisioner "remote-exec" {
+    provisioner "file" {
     connection {
       type        = "ssh"
       host        = google_compute_instance.streamlit_vm.network_interface.0.access_config.0.nat_ip
-      user        = "var.p" 
+      user        = var.user_ssh
+      private_key = file(var.private_ssh_key)
+    }
+
+    source      = "install.sh"
+    destination = "/tmp/install.sh"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      host        = google_compute_instance.streamlit_vm.network_interface.0.access_config.0.nat_ip
+      user        = var.user_ssh
       private_key = file(var.private_ssh_key)
     }
 
     inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y docker.io git",
-      "sudo curl -L \"https://github.com/docker/compose/releases/download/2.20.2/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose",
-      "sudo chmod +x /usr/local/bin/docker-compose",
-      "git clone ${var.repo_url} /home/${var.user_ssh}/app",
-      "cd /home/${var.user_ssh}/app",
-      "sudo docker-compose up -d"
+      "chmod +x /tmp/install.sh",
+      "sudo /tmp/install.sh"
     ]
+
   }
+
   tags = ["streamlit-server"]
 }
+
 
 # Firewall rules for Streamlit (8501), Kestra (8080), and PostgreSQL (5432)
 resource "google_compute_firewall" "default" {

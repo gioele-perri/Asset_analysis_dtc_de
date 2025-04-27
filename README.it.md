@@ -1,15 +1,14 @@
-> 🇬🇧 This README is also available in [English](README.md).
+> 🇮🇹 Questo README è disponibile anche in [Italiano](README.md).
 
 # Financial Asset Metrics Dashboard
 
 ## Indice
-
 - [Descrizione](#descrizione)
-- [Sezioni principali](#sezioni-principali)
-  - [Asset Behavioral Analysis](#asset-behavioral-analysis)
-  - [Market Analysis](#market-analysis)
+- [Sezioni Principali](#sezioni-principali)
+  - [Analisi Comportamentale degli Asset](#analisi-comportamentale-degli-asset)
+  - [Analisi di Mercato](#analisi-di-mercato)
 - [Architettura e Tecnologia](#architettura-e-tecnologia)
-  - [Processamento Dati](#processamento-dati)
+  - [Elaborazione Dati](#elaborazione-dati)
   - [Infrastructure as Code (IaC)](#infrastructure-as-code-iac)
   - [Containerizzazione](#containerizzazione)
 - [Installazione](#installazione)
@@ -118,8 +117,8 @@ Per il deploy in ambiente di produzione:
 1. **Configurazione Google Cloud**:
    - Crea un account di servizio e scarica il file JSON delle credenziali.
 
-2. **Deploy tramite Terraform**:
-   - Utilizza Terraform per eseguire il deploy dell'infrastruttura e dei servizi associati.
+2. **Installa Terraform sul tuo pc**:
+   - Utilizzeremo Terraform per eseguire il deploy dell'infrastruttura e dei servizi associati.
 
 3. **Dopo aver installato Terraform**:
     ```bash
@@ -127,9 +126,15 @@ Per il deploy in ambiente di produzione:
     terraform init
     terraform apply -target="google_compute_instance.streamlit_vm" -target="google_compute_firewall.default"
 
-    Kestra URL prompt : do not insert anything and press Enter
+    Al Kestra URL prompt : premi INVIO senza inserire nulla
+
+    Copia l'URL Kestra (mostrato come output nella console da terraform)
 
     terraform apply
+
+    Al Kestra URL prompt : Incolla il link copiato precedentemente
     ```
 > **Gentle reminder**:  
 Assicurati di aver definito tutte le variabili nel file `variables.tf` e il link Looker nella `variables.json`.
+
+  Se qualcosa non dovesse 
