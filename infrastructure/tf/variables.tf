@@ -65,5 +65,9 @@ variable "machine_type" {
 variable "repo_url" {
   description = "URL of the Git repository to clone"
   type        = string
-  default     = "https://github.com/your-repo/app.git"
+  default     = "https://github.com/gioele-perri/Asset_analysis_dtc_de.git"
+}
+
+variable "kestra_url" {
+  description = "URL di Kestra"
 }
