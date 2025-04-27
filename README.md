@@ -52,7 +52,7 @@ Il progetto è completamente containerizzato utilizzando **Docker**. Questo cons
 
 - **variables.tf**: Contiene le variabili necessarie per la configurazione dell'ambiente GCP e Kestra.
 - **Kestra Variables**: Alcune variabili specifiche per Kestra sono necessarie per configurare correttamente l'orchestrazione dei task.
-- **Link Dashboard looker**: Modificare il file in app/main.py
+- **Link Dashboard looker**: Inserire il link embedded della dashboard looker in app/variables.json
 
 ### Esecuzione Locale
 
