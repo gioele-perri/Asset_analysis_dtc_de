@@ -18,7 +18,7 @@
 - [Deploy](#deploy)
 
 ---
-
+### Link alla dashboard: https://bit.ly/4jR5ppm
 ## Descrizione
 
 Il progetto è dedicato all'analisi delle metriche degli asset finanziari, con un focus sui mercati statunitensi. La dashboard fornisce due sezioni principali che permettono agli utenti di ottenere informazioni dettagliate riguardo il comportamento degli asset e lo stato del mercato:
