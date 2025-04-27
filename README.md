@@ -20,6 +20,9 @@ Il progetto è dedicato all'analisi delle metriche degli asset finanziari, con u
 
 ## Architettura e Tecnologia
 
+[Project architetcture generated with Lucidchart](project.png)
+
+
 ### Processamento Dati
 
 - **Asset Behavioral Analysis**:
@@ -54,9 +57,12 @@ Il progetto è completamente containerizzato utilizzando **Docker**. Questo cons
 - **Kestra Variables**: Alcune variabili specifiche per Kestra sono necessarie per configurare correttamente l'orchestrazione dei task.
 - **Link Dashboard looker**: Inserire il link embedded della dashboard looker in app/variables.json
 
+> **Attenzione**:  Assicurati di avere configurato correttamente Google Cloud e i permessi per l'accesso. Terraform si occuperà di creare tutte le risore e settare la sezione IAM. Potrebbe essere necessario garantire alcuni ruoli di modifica sul progetto al service account di terraform, in modo da consetire la gestione IAM.
+
+
 ### Esecuzione Locale
 
-> **Attenzione**: Quando esegui il progetto in locale, verrà deployata solamente la parte **Streamlit** della dashboard. Kestra verrà comunque avviato, ma senza configurazioni complete. Per replicare il comportamento completo di Kestra, dovrai seguire i passi descritti di seguito.
+> **Attenzione**: Quando esegui il progetto in locale, verrà deployata solamente la parte **Streamlit** + **Pandas** (Asset Behavioral Analysis) della dashboard. Kestra verrà comunque avviato, ma senza configurazioni. La sezione Warehousing necessita di Google Cloud BigQuery
 
 1. Clona il repository:
     ```bash
@@ -64,18 +70,27 @@ Il progetto è completamente containerizzato utilizzando **Docker**. Questo cons
     cd financial-metrics-dashboard
     ```
 
-2. Configura le variabili nel file **variables.tf** e nelle variabili di Kestra.
-
-3. Per avviare il progetto in locale, esegui lo script:
+2. Per avviare il progetto in locale, esegui lo script:
     ```bash
-    ./local_deploy.sh
+    pip install streamlit
+    streamlit run ./main.py
     ```
 
-    > **Nota Importante**: Kestra verrà avviato, ma senza configurazioni complete. Se desideri eseguire una replica completa di Kestra, devi:
-    - **Modificare manualmente le variabili di Kestra** nel file `kestra.tf` all'interno del path **terraform**.
-    - Creare il flusso di lavoro copiando il contenuto del file nella cartella `kestra/flow` e configurandolo di conseguenza.
+   O in alternativa se preferisci l'esecuzione docker locale
+    ```bash
+    cd ./app
+    docker-compose up 
+    ```
 
-    > **Attenzione**: Kestra caricherà i dati in BigQuery. Assicurati di avere configurato correttamente Google Cloud e i permessi per l'accesso.
+**Se vuoi avviare kestra in locale** per visualizzare il flusso (non funzionerà se non hai Google cloud run) o l'orchestrator
+    ```bash
+    cd ./kestra
+    docker-compose up 
+    ```
+    > **Nota Importante**: Per caricare il flusso su kestra:
+    - Copia il contenuto del file nella cartella `kestra/flow` e configurandolo di conseguenza.
+
+
 
 ---
 
@@ -89,5 +104,10 @@ Per il deploy su un ambiente di produzione, segui i seguenti passaggi:
 2. **Esegui il deploy tramite Terraform**:
    - Utilizza Terraform per eseguire il deploy dell'infrastruttura e dei servizi associati.
 
----
-
+3. **Dopo aver installato terraform sul tuo computer**:
+    ```bash
+    cd ./infrastructure/tf
+    terraform init
+    terraform apply
+    ```
+    > **Gentle reminder**: Assicurati di aver definito le variabili nel file variables.tf e l'embed url looker in variables.json
