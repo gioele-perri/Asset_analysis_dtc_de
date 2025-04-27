@@ -124,6 +124,7 @@ To deploy to a production environment:
 
 1. **Google Cloud Settings**:
    - Create a service account and download the JSON credential file.
+   - Set your SSH connection. Generate a key pair in your pc and store your public key in GCP
 
 2. **Deploy using Terraform**:
    - Use Terraform to deploy the infrastructure and related services.
@@ -132,6 +133,10 @@ To deploy to a production environment:
     ```bash
     cd ./infrastructure/tf
     terraform init
+    terraform apply -target="google_compute_instance.streamlit_vm" -target="google_compute_firewall.default"
+
+    Kestra URL prompt : do not insert anything and press Enter
+
     terraform apply
     ```
 > **Gentle reminder**:  

@@ -71,3 +71,13 @@ variable "repo_url" {
 variable "kestra_url" {
   description = "URL di Kestra"
 }
+
+variable "private_ssh_key" {
+  description = "Private SSH key for accessing the VM instance"
+  default = "insert_your_private_key_path_here"
+}
+
+variable "user_ssh" {
+  description = "SSH user for accessing the VM instance"
+  default     = "ubuntu"
+}

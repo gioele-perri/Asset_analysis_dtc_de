@@ -20,8 +20,24 @@ resource "google_compute_instance" "streamlit_vm" {
     repo_url = var.repo_url
   }
 
-  metadata_startup_script = file("${path.module}/scripts/setup.sh")
+   provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      host        = google_compute_instance.streamlit_vm.network_interface.0.access_config.0.nat_ip
+      user        = "var.p" 
+      private_key = file(var.private_ssh_key)
+    }
 
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y docker.io git",
+      "sudo curl -L \"https://github.com/docker/compose/releases/download/2.20.2/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose",
+      "sudo chmod +x /usr/local/bin/docker-compose",
+      "git clone ${var.repo_url} /home/${var.user_ssh}/app",
+      "cd /home/${var.user_ssh}/app",
+      "sudo docker-compose up -d"
+    ]
+  }
   tags = ["streamlit-server"]
 }
 
@@ -34,7 +50,7 @@ resource "google_compute_firewall" "default" {
     protocol = "tcp"
     ports    = ["8501", "8080", "5432"]
   }
-
+  source_ranges = ["0.0.0.0/0"]
   target_tags = ["streamlit-server"]
 }
 

@@ -125,6 +125,10 @@ Per il deploy in ambiente di produzione:
     ```bash
     cd ./infrastructure/tf
     terraform init
+    terraform apply -target="google_compute_instance.streamlit_vm" -target="google_compute_firewall.default"
+
+    Kestra URL prompt : do not insert anything and press Enter
+
     terraform apply
     ```
 > **Gentle reminder**:  
