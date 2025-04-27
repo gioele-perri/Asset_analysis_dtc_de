@@ -1,0 +1,90 @@
+id: asset-analysis
+namespace: your.project
+
+triggers:
+  - id: daily-trigger
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 0 * * *"  # ogni giorno a mezzanotte UTC
+
+tasks:
+  - id: working-directory
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: stage1
+        type: io.kestra.plugin.scripts.python.Script
+        inputFiles:
+          requirements.txt: |
+            yfinance
+            pandas
+        beforeCommands:
+          - pip install -r requirements.txt
+        script: |
+          import yfinance as yf
+          import pandas as pd
+          from datetime import datetime
+          
+          tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "SPY", "SPX", "DIA", "QQQ", "IWM"]
+          start = "2015-01-01"
+          end = datetime.now().strftime("%Y-%m-%d")
+          print (end)
+          interval = "1wk"
+          
+          df = yf.download(tickers, start=start, end=end, interval=interval, group_by='ticker', auto_adjust=True)
+          
+          # Verifica se il DataFrame ha una struttura multi-indice
+          if isinstance(df.columns, pd.MultiIndex):
+              close_prices = df.xs('Close', axis=1, level=1)
+          else:
+              close_prices = df['Close']
+          
+          returns = close_prices.pct_change().dropna()
+          
+          
+          monthly_returns = returns.copy()
+          monthly_returns.index = pd.to_datetime(monthly_returns.index)
+          
+          monthly_returns['YearMonth'] = monthly_returns.index.to_period('M')
+          
+          monthly_long = monthly_returns.reset_index().melt(id_vars=["Date", "YearMonth"], var_name="Ticker", value_name="Return")
+          
+          monthly_stats = (
+              monthly_long
+              .groupby(["Ticker", "YearMonth"])
+              .agg(Mean_Return=("Return", "mean"), Volatility=("Return", "std"))
+              .reset_index()
+          )
+          
+          
+          monthly_stats[['Year', 'Month']] = monthly_stats['YearMonth'].astype(str).str.split('-', expand=True)
+          
+          
+          df = monthly_stats.drop(columns=['YearMonth'])
+          
+          output_path = "./asset_analysis_result.csv"
+          df.to_csv(output_path, index=False)
+          
+          print(f"File aggiornato salvato in: {output_path}")
+      
+        outputFiles:
+          - "asset_analysis_result.csv"  # Salva il file nella directory di lavoro corrente
+
+  - id: print-output
+    type: io.kestra.plugin.scripts.python.Script
+  
+    script: |
+      with open("{{ outputs.stage1.outputFiles['asset_analysis_result.csv'] }}", "r") as f:
+          content = f.read()
+          print("=== Contenuto del CSV ===")
+          print(content)
+
+
+  - id: upload-to-bigquery
+    type: io.kestra.plugin.gcp.bigquery.Load
+    serviceAccount: "{{kv('GCP_CREDENTIALS')}}"
+    from: "{{ outputs.stage1.outputFiles['asset_analysis_result.csv'] }}"
+    destinationTable: "{{kv('GCP_PROJECT_ID')}}.{{kv('GCP_BQ_DATASET')}}.{{kv('GCP_BQ_TABLE_NAME')}}"
+    format: CSV
+    csvOptions:
+      fieldDelimiter: ","
+      skipLeadingRows: 1 
+    writeDisposition: WRITE_TRUNCATE

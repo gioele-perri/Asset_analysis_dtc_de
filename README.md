@@ -1,1 +1,93 @@
-# Asset_analysis_dtc_de
+# Financial Asset Metrics Dashboard
+
+## Descrizione
+
+Il progetto è dedicato all'analisi delle metriche degli asset finanziari, con un focus sui mercati statunitensi. La dashboard fornisce due sezioni principali che permettono agli utenti di ottenere informazioni dettagliate riguardo il comportamento degli asset e lo stato del mercato:
+
+### Sezioni principali:
+
+1. **Asset Behavioral Analysis**:
+   Questa sezione permette di analizzare i dati storici degli asset finanziari (tramite ticker). Utilizzando i dati di Yahoo Finance, vengono calcolate alcune metriche statistiche, tra cui:
+   - Tendenza dei prezzi nei giorni della settimana
+   - Deviazione standard dei prezzi
+   Gli utenti possono inserire i ticker desiderati e la dashboard calcola automaticamente queste metriche su una dimensione temporale aggregata.
+
+2. **Market Analysis**:
+   La seconda sezione fornisce una panoramica sullo stato generale di alcuni degli asset più significativi del mercato USA. Analizza i dati storici e calcola parametri finanziari come lo **Sharp Ratio**. I dati vengono aggregati per periodo e visualizzati in modo da permettere un confronto tra diversi asset.
+   Il data warehouse contiene 10 anni di dati storici, sempre prelevati da Yahoo Finance.
+
+---
+
+## Architettura e Tecnologia
+
+### Processamento Dati
+
+- **Asset Behavioral Analysis**:
+  - I dati vengono estratti in batch tramite l'API di Yahoo Finance.
+  - Utilizzando la libreria **Pandas**, i dati vengono trasformati per calcolare le metriche statistiche necessarie, che vengono poi visualizzate in grafici.
+
+- **Market Analysis**:
+  - I dati vengono prelevati ogni sera utilizzando l'orchestratore **Kestra**, che carica i dati nel data warehouse **BigQuery**.
+  - Le metriche calcolate sui dati storici vengono visualizzate tramite **Looker Studio**.
+
+### Infrastructure as Code (IaC)
+
+L'infrastruttura è configurata con **Terraform**, che permette di gestire l'intera infrastruttura come codice, semplificando il processo di provisioning e deployment dei servizi di Kestra e Google Cloud Platform (GCP).
+
+### Containerizzazione
+
+Il progetto è completamente containerizzato utilizzando **Docker**. Questo consente di eseguire il progetto in qualsiasi ambiente, facilitando il deployment e l'esecuzione locale.
+
+---
+
+## Installazione
+
+### Prerequisiti
+- **Google Cloud Platform (GCP)** account con permessi adeguati per BigQuery e Google Cloud Storage.
+- **Kestra** per l'orchestrazione dei flussi di lavoro.
+- **Docker** per la containerizzazione del progetto.
+- **Terraform** per la gestione dell'infrastruttura.
+
+### Variabili da Definire
+
+- **variables.tf**: Contiene le variabili necessarie per la configurazione dell'ambiente GCP e Kestra.
+- **Kestra Variables**: Alcune variabili specifiche per Kestra sono necessarie per configurare correttamente l'orchestrazione dei task.
+- **Link Dashboard looker**: Modificare il file in app/main.py
+
+### Esecuzione Locale
+
+> **Attenzione**: Quando esegui il progetto in locale, verrà deployata solamente la parte **Streamlit** della dashboard. Kestra verrà comunque avviato, ma senza configurazioni complete. Per replicare il comportamento completo di Kestra, dovrai seguire i passi descritti di seguito.
+
+1. Clona il repository:
+    ```bash
+    git clone https://github.com/tuo-username/financial-metrics-dashboard.git
+    cd financial-metrics-dashboard
+    ```
+
+2. Configura le variabili nel file **variables.tf** e nelle variabili di Kestra.
+
+3. Per avviare il progetto in locale, esegui lo script:
+    ```bash
+    ./local_deploy.sh
+    ```
+
+    > **Nota Importante**: Kestra verrà avviato, ma senza configurazioni complete. Se desideri eseguire una replica completa di Kestra, devi:
+    - **Modificare manualmente le variabili di Kestra** nel file `kestra.tf` all'interno del path **terraform**.
+    - Creare il flusso di lavoro copiando il contenuto del file nella cartella `kestra/flow` e configurandolo di conseguenza.
+
+    > **Attenzione**: Kestra caricherà i dati in BigQuery. Assicurati di avere configurato correttamente Google Cloud e i permessi per l'accesso.
+
+---
+
+## Deploy
+
+Per il deploy su un ambiente di produzione, segui i seguenti passaggi:
+
+1. **Impostazioni Google Cloud**:
+   - Crea un account di servizio e scarica il file JSON delle credenziali.
+
+2. **Esegui il deploy tramite Terraform**:
+   - Utilizza Terraform per eseguire il deploy dell'infrastruttura e dei servizi associati.
+
+---
+

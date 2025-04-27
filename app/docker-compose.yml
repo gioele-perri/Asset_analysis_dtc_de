@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  streamlit-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - PORT=8501
+    volumes:
+      - .:/app
+    command: streamlit run main.py --server.port=8501 --server.enableCORS=false --server.enableXsrfProtection=false
