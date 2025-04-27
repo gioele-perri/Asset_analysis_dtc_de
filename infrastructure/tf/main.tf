@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "kestra" {
-  url = "http://localhost:8080"
+  url = var.kestra_url
 }
 
 provider "google" {

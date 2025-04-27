@@ -2,11 +2,11 @@
 resource "google_compute_instance" "streamlit_vm" {
   name         = var.vm_name
   machine_type = var.machine_type
-  zone         = "${var.region}-a"
+  zone         = "${var.region}-b"
 
   boot_disk {
     initialize_params {
-      image = "ubuntu-2204-jammy-v20240415"  # Ubuntu 22.04 LTS
+      image = "ubuntu-2204-jammy-v20250415"  # Ubuntu 22.04 LTS
       size  = 30  # GB
     }
   }
@@ -26,7 +26,7 @@ resource "google_compute_instance" "streamlit_vm" {
 }
 
 # Firewall rules for Streamlit (8501), Kestra (8080), and PostgreSQL (5432)
-resource "google_compute_firewall" "allow_app_ports" {
+resource "google_compute_firewall" "default" {
   name    = "allow-streamlit-kestra"
   network = "default"
 
@@ -37,7 +37,6 @@ resource "google_compute_firewall" "allow_app_ports" {
 
   target_tags = ["streamlit-server"]
 }
-
 
 
 # BigQuery Dataset and Table Creation

@@ -1,0 +1,8 @@
+infrastructure/tf/.terraform/providers/registry.terraform.io/hashicorp/google/6.32.0/windows_386/LICENSE.txt
+infrastructure/tf/.terraform/providers/registry.terraform.io/hashicorp/google/6.32.0/windows_386/terraform-provider-google_v6.32.0_x5.exe
+infrastructure/tf/.terraform/providers/registry.terraform.io/kestra-io/kestra/0.22.0/windows_386/CHANGELOG.md
+infrastructure/tf/.terraform/providers/registry.terraform.io/kestra-io/kestra/0.22.0/windows_386/LICENSE
+infrastructure/tf/.terraform/providers/registry.terraform.io/kestra-io/kestra/0.22.0/windows_386/README.md
+infrastructure/tf/.terraform/providers/registry.terraform.io/kestra-io/kestra/0.22.0/windows_386/terraform-provider-kestra_v0.22.0.exe
+infrastructure/tf/terraform.tfstate.backup
+infrastructure/tf/terraform.tfstate

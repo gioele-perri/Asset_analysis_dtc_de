@@ -67,8 +67,6 @@ services:
       postgres:
         condition: service_started
 
-
-
   streamlit-app:
     build:
       context: ./app

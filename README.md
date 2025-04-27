@@ -1,113 +1,139 @@
+> 🇮🇹 This README is also available in [Italiano](README.md).
+
 # Financial Asset Metrics Dashboard
 
-## Descrizione
+## Table of Contents
 
-Il progetto è dedicato all'analisi delle metriche degli asset finanziari, con un focus sui mercati statunitensi. La dashboard fornisce due sezioni principali che permettono agli utenti di ottenere informazioni dettagliate riguardo il comportamento degli asset e lo stato del mercato:
-
-### Sezioni principali:
-
-1. **Asset Behavioral Analysis**:
-   Questa sezione permette di analizzare i dati storici degli asset finanziari (tramite ticker). Utilizzando i dati di Yahoo Finance, vengono calcolate alcune metriche statistiche, tra cui:
-   - Tendenza dei prezzi nei giorni della settimana
-   - Deviazione standard dei prezzi
-   Gli utenti possono inserire i ticker desiderati e la dashboard calcola automaticamente queste metriche su una dimensione temporale aggregata.
-
-2. **Market Analysis**:
-   La seconda sezione fornisce una panoramica sullo stato generale di alcuni degli asset più significativi del mercato USA. Analizza i dati storici e calcola parametri finanziari come lo **Sharp Ratio**. I dati vengono aggregati per periodo e visualizzati in modo da permettere un confronto tra diversi asset.
-   Il data warehouse contiene 10 anni di dati storici, sempre prelevati da Yahoo Finance.
+- [Description](#description)
+- [Main Sections](#main-sections)
+  - [Asset Behavioral Analysis](#asset-behavioral-analysis)
+  - [Market Analysis](#market-analysis)
+- [Architecture and Technology](#architecture-and-technology)
+  - [Data Processing](#data-processing)
+  - [Infrastructure as Code (IaC)](#infrastructure-as-code-iac)
+  - [Containerization](#containerization)
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Variables to Define](#variables-to-define)
+  - [Local Execution](#local-execution)
+- [Deploy](#deploy)
 
 ---
 
-## Architettura e Tecnologia
+## Description
 
-[Project architetcture generated with Lucidchart](project.png)
+This project focuses on analyzing financial asset metrics, with a focus on U.S. markets.  
+The dashboard offers two main sections, allowing users to gain detailed insights into asset behavior and overall market conditions:
 
+### Main Sections:
 
-### Processamento Dati
+1. **Asset Behavioral Analysis**:
+   This section enables the analysis of historical financial asset data (through ticker symbols).  
+   Using Yahoo Finance data, it calculates several statistical metrics, including:
+   - Price trends across weekdays
+   - Standard deviation of prices
+   Users can input their desired tickers, and the dashboard will automatically compute these metrics over an aggregated time window.
+
+2. **Market Analysis**:
+   This section provides an overview of the general state of some of the most significant U.S. market assets.  
+   It analyzes historical data and computes financial parameters such as the **Sharpe Ratio**.  
+   The data is aggregated by period and displayed to allow easy comparison between different assets.  
+   The data warehouse stores 10 years of historical data, all retrieved from Yahoo Finance.
+
+---
+
+## Architecture and Technology
+
+![project](https://github.com/user-attachments/assets/94ab2564-1afd-4ad8-9b3e-09008aa854bc)
+
+### Data Processing
 
 - **Asset Behavioral Analysis**:
-  - I dati vengono estratti in batch tramite l'API di Yahoo Finance.
-  - Utilizzando la libreria **Pandas**, i dati vengono trasformati per calcolare le metriche statistiche necessarie, che vengono poi visualizzate in grafici.
+  - Data is batch extracted through the Yahoo Finance API.
+  - Using the **Pandas** library, the data is transformed to calculate the necessary statistical metrics, which are then visualized through graphs.
 
 - **Market Analysis**:
-  - I dati vengono prelevati ogni sera utilizzando l'orchestratore **Kestra**, che carica i dati nel data warehouse **BigQuery**.
-  - Le metriche calcolate sui dati storici vengono visualizzate tramite **Looker Studio**.
+  - Data is retrieved every evening using the **Kestra** orchestrator, which loads the data into the **BigQuery** data warehouse.
+  - The historical metrics are then visualized using **Looker Studio**.
 
 ### Infrastructure as Code (IaC)
 
-L'infrastruttura è configurata con **Terraform**, che permette di gestire l'intera infrastruttura come codice, semplificando il processo di provisioning e deployment dei servizi di Kestra e Google Cloud Platform (GCP).
+The infrastructure is managed through **Terraform**, allowing the entire cloud environment to be defined as code, simplifying provisioning and deployment of Kestra and Google Cloud Platform (GCP) services.
 
-### Containerizzazione
+### Containerization
 
-Il progetto è completamente containerizzato utilizzando **Docker**. Questo consente di eseguire il progetto in qualsiasi ambiente, facilitando il deployment e l'esecuzione locale.
+The project is fully containerized using **Docker**.  
+This allows the project to run in any environment, facilitating deployment and local execution.
 
 ---
 
-## Installazione
+## Installation
 
-### Prerequisiti
-- **Google Cloud Platform (GCP)** account con permessi adeguati per BigQuery e Google Cloud Storage.
-- **Kestra** per l'orchestrazione dei flussi di lavoro.
-- **Docker** per la containerizzazione del progetto.
-- **Terraform** per la gestione dell'infrastruttura.
+### Prerequisites
+- **Google Cloud Platform (GCP)** account with the appropriate permissions for BigQuery and Google Cloud Storage.
+- **Kestra** for workflow orchestration.
+- **Docker** for project containerization.
+- **Terraform** for infrastructure management.
 
-### Variabili da Definire
+### Variables to Define
 
-- **variables.tf**: Contiene le variabili necessarie per la configurazione dell'ambiente GCP e Kestra.
-- **Kestra Variables**: Alcune variabili specifiche per Kestra sono necessarie per configurare correttamente l'orchestrazione dei task.
-- **Link Dashboard looker**: Inserire il link embedded della dashboard looker in app/variables.json
+- **variables.tf**: Contains the necessary variables for configuring the GCP and Kestra environment.
+- **Kestra Variables**: Some specific Kestra variables are required to correctly configure task orchestration.
+- **Looker Dashboard Link**: Insert the embedded Looker dashboard link in `app/variables.json`.
 
-> **Attenzione**:  Assicurati di avere configurato correttamente Google Cloud e i permessi per l'accesso. Terraform si occuperà di creare tutte le risore e settare la sezione IAM. Potrebbe essere necessario garantire alcuni ruoli di modifica sul progetto al service account di terraform, in modo da consetire la gestione IAM.
+> **Attention**: Ensure that Google Cloud is correctly configured with proper access permissions. Terraform will automatically create all resources and set up IAM roles.  
+Some additional project roles might need to be manually granted to the Terraform service account to allow full IAM management.
 
+### Local Execution
 
-### Esecuzione Locale
+> **Attention**: When running the project locally, only the **Streamlit** + **Pandas** (Asset Behavioral Analysis) part of the dashboard will be deployed.  
+Kestra will still start, but without active configurations. The Warehousing section requires Google Cloud BigQuery.
 
-> **Attenzione**: Quando esegui il progetto in locale, verrà deployata solamente la parte **Streamlit** + **Pandas** (Asset Behavioral Analysis) della dashboard. Kestra verrà comunque avviato, ma senza configurazioni. La sezione Warehousing necessita di Google Cloud BigQuery
-
-1. Clona il repository:
+1. Clone the repository:
     ```bash
-    git clone https://github.com/tuo-username/financial-metrics-dashboard.git
+    git clone https://github.com/your-username/financial-metrics-dashboard.git
     cd financial-metrics-dashboard
     ```
 
-2. Per avviare il progetto in locale, esegui lo script:
+2. To start the project locally, run:
     ```bash
     pip install streamlit
     streamlit run ./main.py
     ```
 
-   O in alternativa se preferisci l'esecuzione docker locale
+   Or alternatively, using Docker:
     ```bash
     cd ./app
     docker-compose up 
     ```
 
-**Se vuoi avviare kestra in locale** per visualizzare il flusso (non funzionerà se non hai Google cloud run) o l'orchestrator
+**If you want to run Kestra locally** to view the flow (note: it will not work if you don't have Google Cloud Run or a similar environment):
+
     ```bash
     cd ./kestra
     docker-compose up 
     ```
-    > **Nota Importante**: Per caricare il flusso su kestra:
-    - Copia il contenuto del file nella cartella `kestra/flow` e configurandolo di conseguenza.
-
-
+> **Important Note**: To upload the flow to Kestra:
+- Copy the content of the files inside the `kestra/flow` folder and configure them accordingly.
 
 ---
 
 ## Deploy
 
-Per il deploy su un ambiente di produzione, segui i seguenti passaggi:
+To deploy to a production environment:
 
-1. **Impostazioni Google Cloud**:
-   - Crea un account di servizio e scarica il file JSON delle credenziali.
+1. **Google Cloud Settings**:
+   - Create a service account and download the JSON credential file.
 
-2. **Esegui il deploy tramite Terraform**:
-   - Utilizza Terraform per eseguire il deploy dell'infrastruttura e dei servizi associati.
+2. **Deploy using Terraform**:
+   - Use Terraform to deploy the infrastructure and related services.
 
-3. **Dopo aver installato terraform sul tuo computer**:
+3. **After installing Terraform**:
     ```bash
     cd ./infrastructure/tf
     terraform init
     terraform apply
     ```
-    > **Gentle reminder**: Assicurati di aver definito le variabili nel file variables.tf e l'embed url looker in variables.json
+> **Gentle reminder**:  
+Ensure you have defined all variables inside `variables.tf` and set the Looker embed URL inside `variables.json`.
+ter
