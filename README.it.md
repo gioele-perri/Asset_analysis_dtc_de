@@ -1,4 +1,4 @@
-> 🇮🇹 Questo README è disponibile anche in [Italiano](README.md).
+> GB This README is available also in [English](README.md).
 
 # Financial Asset Metrics Dashboard
 
