@@ -20,7 +20,9 @@ Il progetto è dedicato all'analisi delle metriche degli asset finanziari, con u
 
 ## Architettura e Tecnologia
 
-[Project architetcture generated with Lucidchart](project.png)
+
+![project](https://github.com/user-attachments/assets/94ab2564-1afd-4ad8-9b3e-09008aa854bc)
+
 
 
 ### Processamento Dati
