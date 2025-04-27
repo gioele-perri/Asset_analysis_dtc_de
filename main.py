@@ -18,7 +18,7 @@ st.title("📊 Asset Behavioral Analysis")
 
 # Load EMBED_URL from JSON file
 def load_embed_url():
-    json_path = os.path.join("app", "config.json")
+    json_path = os.path.join("app", "variables.json")
     with open(json_path, "r") as file:
         config = json.load(file)
     return config.get("EMBED_URL", "")

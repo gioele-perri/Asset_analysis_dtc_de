@@ -2,14 +2,14 @@ import streamlit as st
 import pandas as pd
 import os
 import json
-from app.data import download_data, aggregate_data
-from app.plots import (
+from data import download_data, aggregate_data
+from plots import (
     plot_bar_chart,
     plot_cumulative_return,
     plot_return_distribution,
     plot_volatility,
 )
-from app.ui import show_ticker_selection, show_warning
+from ui import show_ticker_selection, show_warning
 
 
 # Config
@@ -18,7 +18,7 @@ st.title("📊 Asset Behavioral Analysis")
 
 # Load EMBED_URL from JSON file
 def load_embed_url():
-    json_path = os.path.join("app", "config.json")
+    json_path = os.path.join("variables.json")
     with open(json_path, "r") as file:
         config = json.load(file)
     return config.get("EMBED_URL", "")
